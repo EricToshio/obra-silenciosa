@@ -31,5 +31,5 @@ MongoClient.connect(process.env.MONGO_URL, { promiseLibrary: Promise }, (err, cl
   });
 
   // Start simulator
-  require('./services/simulator').startSimulator(db);
+  require('./services/simulator').startSimulator(client);
 });

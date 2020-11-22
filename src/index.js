@@ -9,7 +9,7 @@ const APP_PORT = 3000;
 app.use(require('./routes/estimatedNoiseValues'));
 app.use(require('./routes/sensorPositions'));
 
-app.get('/', (req, res) => {
+app.get('/teste', (req, res) => {
   // EXEMPLO para obter variavel db
   const { db } = req.app.locals;
   res.send('Hello World!');
@@ -17,11 +17,12 @@ app.get('/', (req, res) => {
 
 // Create a MongoDB connection pool and start the application
 // after the database connection is ready
-MongoClient.connect(process.env.MONGO_URL, { promiseLibrary: Promise }, (err, db) => {
+MongoClient.connect(process.env.MONGO_URL, { promiseLibrary: Promise }, (err, client) => {
   if (err) {
     console.log(`Failed to connect to the database. ${err.stack}`);
   }
-  app.locals.db = db;
+  // db = client.db('metric');
+  app.locals.db = client;
   app.listen(APP_PORT, () => {
     console.log(`Server running in http://localhost:${APP_PORT}`);
   });

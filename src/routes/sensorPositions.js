@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const sensorPositionsFixture = require('./sensorPositionsFixture.json');
 
-router.get('/sensorPositions', (req, res) => {
+router.get('/sensorPositions', async (req, res) => {
   res.json(sensorPositionsFixture);
 });
 

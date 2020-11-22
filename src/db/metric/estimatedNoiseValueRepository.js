@@ -1,8 +1,11 @@
-const getSensorsMeasurements = async (client, timestamp = null) => {
+const getSensorsMeasurements = async (client) => {
   const db = client.db('metric');
   const sensorPositionsCollection = db.collection('message');
-  const filter = timestamp ? { timestamp } : {};
-  return sensorPositionsCollection.find().toArray();
+  const lastMeasure = await sensorPositionsCollection
+    .find().sort({ timestamp: -1 })
+    .limit(1)
+    .toArray();
+  return sensorPositionsCollection.find({ timestamp: lastMeasure[0].timestamp }).toArray();
 };
 
 module.exports = {

@@ -1,12 +1,13 @@
 const router = require('express').Router();
 const bodyParser = require('body-parser');
-const estimatedNoiseValuesFixture = require('./fixtures/estimatedNoiseValuesFixture.json');
+const { getEstimatedValuesForCoordinates } = require('../services/estimatedNoiseValuesService');
 
 router.use(bodyParser.json());
 
-router.get('/estimatedNoiseValues', (req, res) => {
-  console.log(req.body);
-  res.json(estimatedNoiseValuesFixture);
+router.get('/estimatedNoiseValues', async (req, res) => {
+  const coordinatesMatrix = req.body;
+  const noiseMatrix = await getEstimatedValuesForCoordinates(req.app.locals.db, coordinatesMatrix);
+  res.json(noiseMatrix);
 });
 
 module.exports = router;

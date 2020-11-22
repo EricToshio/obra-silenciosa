@@ -1,11 +1,25 @@
+require('dotenv').config()
 const express = require('express')
+const MongoClient = require('mongodb').MongoClient;
 const app = express()
-const port = 3000
+
+const APP_PORT = 3000
+
 
 app.get('/', (req, res) => {
-  res.send('Hello World!')
+    // EXEMPLO para obter variavel db
+    const db = req.app.locals.db;
+    res.send('Hello World!')
 })
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
-})
+// Create a MongoDB connection pool and start the application
+// after the database connection is ready
+MongoClient.connect(process.env.MONGO_URL, { promiseLibrary: Promise }, (err, db) => {
+    if (err) {
+        console.log(`Failed to connect to the database. ${err.stack}`);
+    }
+    app.locals.db = db;
+    app.listen(APP_PORT, () => {
+        console.log(`Server running in http://localhost:${APP_PORT}`);
+    });
+});

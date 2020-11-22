@@ -18,7 +18,9 @@
   },
   "homepage": "https://github.com/EricToshio/obra-silenciosa#readme",
   "dependencies": {
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "mongodb": "^3.6.3",
     "nodemon": "^2.0.6"
   }
 }

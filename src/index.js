@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const { MongoClient } = require('mongodb');
+const bodyParser = require('body-parser');
 
 const app = express();
 
@@ -8,6 +9,8 @@ const APP_PORT = 3000;
 
 app.use(require('./routes/estimatedNoiseValues'));
 app.use(require('./routes/sensorPositions'));
+
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.get('/teste', (req, res) => {
   // EXEMPLO para obter variavel db

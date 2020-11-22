@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const { MongoClient } = require('mongodb');
+const dataSimulator = require('./services/simulator');
 
 const app = express();
 
@@ -31,5 +32,5 @@ MongoClient.connect(process.env.MONGO_URL, { promiseLibrary: Promise }, (err, cl
   });
 
   // Start simulator
-  require('./services/simulator').startSimulator(client);
+  dataSimulator.startSimulator(client);
 });

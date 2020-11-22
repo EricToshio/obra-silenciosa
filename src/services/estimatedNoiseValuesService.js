@@ -1,6 +1,9 @@
 const { getSensorsMeasurements } = require('../db/metric/estimatedNoiseValueRepository');
+const { getSolution } = require('./wolfram');
 
 const solveTriangulationRelation = async (sensorValues) => {
+  console.log(sensorValues);
+  getSolution(sensorValues).then((res) => console.log(res)).catch((err) => console.error(err));
   const mockedResponse = ({ lat, lon }) => 2;
   return Promise.resolve(mockedResponse);
 };

@@ -25,4 +25,7 @@ MongoClient.connect(process.env.MONGO_URL, { promiseLibrary: Promise }, (err, db
   app.listen(APP_PORT, () => {
     console.log(`Server running in http://localhost:${APP_PORT}`);
   });
+
+  // Start simulator
+  require('./services/simulator').startSimulator(db);
 });

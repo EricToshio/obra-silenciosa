@@ -25,12 +25,10 @@ MongoClient.connect(process.env.MONGO_URL, { promiseLibrary: Promise }, (err, cl
   if (err) {
     console.log(`Failed to connect to the database. ${err.stack}`);
   }
-  // db = client.db('metric');
   app.locals.db = client;
   app.listen(APP_PORT, () => {
     console.log(`Server running in http://localhost:${APP_PORT}`);
   });
 
-  // Start simulator
   dataSimulator.startSimulator(client);
 });

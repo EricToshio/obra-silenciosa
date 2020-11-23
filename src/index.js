@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const { MongoClient } = require('mongodb');
+const cors = require('cors');
 const dataSimulator = require('./services/simulator');
 const noiseLimitCron = require('./cron/noiseLimitCron');
 
@@ -13,6 +14,7 @@ app.use(require('./routes/sensorPositions'));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cors());
 
 // app.get('/teste', (req, res) => {
 //   // EXEMPLO para obter variavel db

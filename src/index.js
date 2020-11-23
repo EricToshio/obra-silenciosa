@@ -13,7 +13,7 @@ const APP_PORT = process.env.PORT;
 app.use(require('./routes/estimatedNoiseValues'));
 app.use(require('./routes/sensorPositions'));
 
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '50MB' }));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 

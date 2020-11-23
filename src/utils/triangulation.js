@@ -12,7 +12,7 @@ const getDistance = (pontALat, pointALon, pointBLat, pointBLon) => {
 
 const calculateDecibel = (soundSource, sensor) => {
   const dist = getDistance(soundSource.lat, soundSource.lon, sensor.lat, sensor.lon);
-  return soundSource.value / dist;
+  return soundSource.value * (Math.exp(-dist / 50) / 120);
 };
 
 module.exports = { calculateDecibel };

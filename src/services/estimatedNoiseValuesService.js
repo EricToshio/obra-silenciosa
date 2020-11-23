@@ -1,11 +1,12 @@
 const { getSensorsMeasurements } = require('../db/metric/estimatedNoiseValueRepository');
-const { getSolution } = require('./wolfram');
+const { getSensorsMeasurementsWithinRange } = require('../db/metric/estimatedNoiseValueRepository');
+const { calculateDecibel } = require('../utils/triangulation');
 
-const solveTriangulationRelation = async (sensorValues) => {
-  console.log(sensorValues);
-  getSolution(sensorValues).then((res) => console.log(res)).catch((err) => console.error(err));
-  const mockedResponse = ({ lat, lon }) => 2;
-  return Promise.resolve(mockedResponse);
+const solveTriangulationRelation = async (sensorValues, dbClient) => {
+  const noiseSourceId = sensorValues[0].noiseSource;
+  const noiseSource = await dbClient.db('metric').collection('noiseSource').find({ _id: noiseSourceId }).toArray();
+  const defineNoiseValue = (coordinates) => calculateDecibel(noiseSource[0], coordinates);
+  return defineNoiseValue;
 };
 
 const estimateNoiseValues = (coordinatesMatrix, noiseValueEstimation) => {
@@ -25,11 +26,17 @@ const estimateNoiseValues = (coordinatesMatrix, noiseValueEstimation) => {
 
 const getEstimatedValuesForCoordinates = async (dbClient, coordinatesMatrix = null) => {
   const sensorValues = await getSensorsMeasurements(dbClient);
-  const noiseValueEstimation = await solveTriangulationRelation(sensorValues);
+  const noiseValueEstimation = await solveTriangulationRelation(sensorValues, dbClient);
   const valuesMatrix = estimateNoiseValues(coordinatesMatrix, noiseValueEstimation);
   return {
     noiseMatrix: valuesMatrix,
   };
 };
 
-module.exports = { getEstimatedValuesForCoordinates };
+const isThereAnyNoiseValueAboveTheLimit = async (dbClient, timeRange) => {
+  const lastValuesWithinTheInterval = await getSensorsMeasurementsWithinRange(dbClient, timeRange);
+  const limitValue = parseInt(process.env.NOISE_LIMIT, 10);
+  return lastValuesWithinTheInterval.some((item) => item.value > limitValue);
+};
+
+module.exports = { getEstimatedValuesForCoordinates, isThereAnyNoiseValueAboveTheLimit };

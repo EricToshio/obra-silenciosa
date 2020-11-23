@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/EricToshio/obra-silenciosa#readme",
   "dependencies": {
+    "@sendgrid/mail": "^7.4.0",
     "axios": "^0.21.0",
     "body-parser": "^1.19.0",
     "cron": "^1.8.2",

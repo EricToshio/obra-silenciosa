@@ -6,7 +6,7 @@ const noiseLimitCron = require('./cron/noiseLimitCron');
 
 const app = express();
 
-const APP_PORT = 3000;
+const APP_PORT = process.env.PORT;
 
 app.use(require('./routes/estimatedNoiseValues'));
 app.use(require('./routes/sensorPositions'));

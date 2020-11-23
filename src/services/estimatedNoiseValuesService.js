@@ -10,13 +10,15 @@ const solveTriangulationRelation = async (sensorValues, dbClient) => {
 };
 
 const estimateNoiseValues = (coordinatesMatrix, noiseValueEstimation) => {
+  const numberOfRows = coordinatesMatrix.latMatrix.length;
+  const numberOfCols = coordinatesMatrix.latMatrix[0].length;
   const estimatedValues = [];
-  for (let i = 0; i < 2; i += 1) {
+  for (let i = 0; i < numberOfRows; i += 1) {
     estimatedValues.push([]);
-    for (let j = 0; j < 2; j += 1) {
+    for (let j = 0; j < numberOfCols; j += 1) {
       const estimatedValue = noiseValueEstimation({
         lat: coordinatesMatrix.latMatrix[i][j],
-        lon: coordinatesMatrix.latMatrix[i][j],
+        lon: coordinatesMatrix.lonMatrix[i][j],
       });
       estimatedValues[i].push(estimatedValue);
     }

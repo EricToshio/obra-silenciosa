@@ -19,4 +19,4 @@ const start = async (dbClient) => {
   }, null, true, 'America/Los_Angeles').start();
 };
 
-module.exports = { start };
+export { start };

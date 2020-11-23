@@ -1,7 +1,7 @@
-const { sendAlertEmail } = require('./email');
+import { sendAlertEmail } from './email';
 
-const AlertsType = {
-  EMAIL: 'EMAIL',
+enum AlertsType {
+  EMAIL = 'EMAIL',
 };
 
 const alertDestinatary = [
@@ -25,10 +25,10 @@ const sendAlerts = (users = alertDestinatary) => {
     user.alertsMedium.forEach((medium) => {
       const alertSender = alertsSendersAvailable[medium.alertType];
       if (alertSender) {
-        alertSender(medium.info);
+        alertSender(medium.info as string);
       }
     });
   });
 };
 
-module.exports = { sendAlerts };
+export { sendAlerts };

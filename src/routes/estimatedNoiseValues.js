@@ -4,7 +4,7 @@ const { getEstimatedValuesForCoordinates } = require('../services/estimatedNoise
 
 router.use(bodyParser.json());
 
-router.get('/estimatedNoiseValues', async (req, res) => {
+router.post('/estimatedNoiseValues', async (req, res) => {
   const coordinatesMatrix = req.body;
   const noiseMatrix = await getEstimatedValuesForCoordinates(req.app.locals.db, coordinatesMatrix);
   res.json(noiseMatrix);

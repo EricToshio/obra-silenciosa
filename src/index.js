@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const { MongoClient } = require('mongodb');
 const cors = require('cors');
+const bodyParser = require('body-parser');
 const dataSimulator = require('./services/simulator');
 const noiseLimitCron = require('./cron/noiseLimitCron');
 
@@ -12,8 +13,8 @@ const APP_PORT = process.env.PORT;
 app.use(require('./routes/estimatedNoiseValues'));
 app.use(require('./routes/sensorPositions'));
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 
 // app.get('/teste', (req, res) => {

@@ -1,13 +1,14 @@
 const { CronJob } = require('cron');
 const { isThereAnyNoiseValueAboveTheLimit } = require('../services/estimatedNoiseValuesService');
 const { sendAlerts } = require('../services/alertTrigger');
+import { MongoClient } from 'mongodb';
 
+// Every 5 minutes "send" a message
 const CRON_FREQUENCY_IN_MINUTES = 5;
 
-// Every 2 minutes "send" a message
 const frequency = `*/${CRON_FREQUENCY_IN_MINUTES} * * * *`;
 
-const start = async (dbClient) => {
+const start = async (dbClient: MongoClient): Promise<void> => {
   console.log('Started alert job.');
 
   new CronJob(frequency, async () => {

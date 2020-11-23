@@ -1,3 +1,5 @@
+import { MongoClient } from 'mongodb';
+
 export type SensorMeasures = {
   _id: string;
   lat: number;
@@ -8,7 +10,7 @@ export type SensorMeasures = {
   timestamp: number;
 }
 
-const getSensorsMeasurements = async (client): Promise<SensorMeasures[]> => {
+const getSensorsMeasurements = async (client: MongoClient): Promise<SensorMeasures[]> => {
   const sensorMeasures = client.db('metric').collection('message');
   const lastMeasure = await sensorMeasures
     .find().sort({ timestamp: -1 })
@@ -17,7 +19,7 @@ const getSensorsMeasurements = async (client): Promise<SensorMeasures[]> => {
   return sensorMeasures.find({ timestamp: lastMeasure[0].timestamp }).toArray();
 };
 
-const getSensorsMeasurementsWithinRange = async (client, rangeInMinutes: number): Promise<SensorMeasures[]> => {
+const getSensorsMeasurementsWithinRange = async (client: MongoClient, rangeInMinutes: number): Promise<SensorMeasures[]> => {
   const currentTimestamp = new Date().getTime();
   const rangeInMiliseconds = rangeInMinutes * 60 * 1000;
   const sensorMeasures = client.db('metric').collection('message');

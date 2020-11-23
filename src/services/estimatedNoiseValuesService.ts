@@ -1,18 +1,20 @@
-const { getSensorsMeasurements } = require('../db/metric/estimatedNoiseValueRepository');
-const { getSensorsMeasurementsWithinRange } = require('../db/metric/estimatedNoiseValueRepository');
-const { calculateDecibel } = require('../utils/triangulation');
+import { getSensorsMeasurements } from '../db/metric/estimatedNoiseValueRepository';
+import { getSensorsMeasurementsWithinRange } from '../db/metric/estimatedNoiseValueRepository';
+import { calculateDecibel } from '../utils/triangulation';
+import { MongoClient } from 'mongodb';
+import { SensorPosition } from '../db/metric/noiseRepository';
 
-const solveTriangulationRelation = async (sensorValues, dbClient) => {
+const solveTriangulationRelation = async (sensorValues, dbClient: MongoClient) => {
   const noiseSourceId = sensorValues[0].noiseSource;
   const noiseSource = await dbClient.db('metric').collection('noiseSource').find({ _id: noiseSourceId }).toArray();
-  const defineNoiseValue = (coordinates) => calculateDecibel(noiseSource[0], coordinates);
+  const defineNoiseValue = (coordinates: SensorPosition) => calculateDecibel(noiseSource[0], coordinates);
   return defineNoiseValue;
 };
 
-const estimateNoiseValues = (coordinatesMatrix, noiseValueEstimation) => {
+const estimateNoiseValues = (coordinatesMatrix, noiseValueEstimation): number[][] => {
   const numberOfRows = coordinatesMatrix.latMatrix.length;
   const numberOfCols = coordinatesMatrix.latMatrix[0].length;
-  const estimatedValues = [];
+  const estimatedValues: number[][] = [];
   for (let i = 0; i < numberOfRows; i += 1) {
     estimatedValues.push([]);
     for (let j = 0; j < numberOfCols; j += 1) {
@@ -26,7 +28,7 @@ const estimateNoiseValues = (coordinatesMatrix, noiseValueEstimation) => {
   return estimatedValues;
 };
 
-const getEstimatedValuesForCoordinates = async (dbClient, coordinatesMatrix = null) => {
+const getEstimatedValuesForCoordinates = async (dbClient: MongoClient, coordinatesMatrix = null) => {
   const sensorValues = await getSensorsMeasurements(dbClient);
   const noiseValueEstimation = await solveTriangulationRelation(sensorValues, dbClient);
   const valuesMatrix = estimateNoiseValues(coordinatesMatrix, noiseValueEstimation);
@@ -35,10 +37,10 @@ const getEstimatedValuesForCoordinates = async (dbClient, coordinatesMatrix = nu
   };
 };
 
-const isThereAnyNoiseValueAboveTheLimit = async (dbClient, timeRange) => {
+const isThereAnyNoiseValueAboveTheLimit = async (dbClient: MongoClient, timeRange: number): Promise<boolean> => {
   const lastValuesWithinTheInterval = await getSensorsMeasurementsWithinRange(dbClient, timeRange);
-  const limitValue = parseInt(process.env.NOISE_LIMIT, 10);
+  const limitValue = parseInt(process.env.NOISE_LIMIT!, 10);
   return lastValuesWithinTheInterval.some((item) => item.value > limitValue);
 };
 
-module.exports = { getEstimatedValuesForCoordinates, isThereAnyNoiseValueAboveTheLimit };
+export { getEstimatedValuesForCoordinates, isThereAnyNoiseValueAboveTheLimit };

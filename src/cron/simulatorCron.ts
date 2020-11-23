@@ -1,11 +1,12 @@
 const { CronJob } = require('cron');
 import { findSensorPositions, SensorPosition } from '../db/metric/noiseRepository';
 const { calculateDecibel } = require('../utils/triangulation');
+import { MongoClient } from 'mongodb';
 
 // Every 2 minutes "send" a message
 const messageCronFrequence = '*/2 * * * *';
 
-const generateRandomDecibel = () => 70 + 50 * Math.random();
+const generateRandomDecibel = (): number => 70 + 50 * Math.random();
 
 const generateSoundSource = (sensorPositions: SensorPosition[]): { lat: number; lon: number; value: number } => {
   const lat = (sensorPositions.reduce((prev, actual) => prev + actual.lat, 0) / 3)
@@ -21,7 +22,7 @@ const generateSoundSource = (sensorPositions: SensorPosition[]): { lat: number; 
   };
 };
 
-const start = async (dbClient) => {
+const start = async (dbClient: MongoClient): Promise<void> => {
   const messageCollection = dbClient.db('metric').collection('message');
   const noiseSourceCollection = dbClient.db('metric').collection('noiseSource');
   console.log('Started sensor simulator');
@@ -45,4 +46,4 @@ const start = async (dbClient) => {
   }, null, true, 'America/Los_Angeles').start();
 };
 
-module.exports = { start };
+export { start };

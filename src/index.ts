@@ -1,23 +1,26 @@
 require('dotenv').config();
-const express = require('express');
-const { MongoClient } = require('mongodb');
-const dataSimulator = require('./cron/simulatorCron');
-const cors = require('cors');
-const bodyParser = require('body-parser');
-const noiseLimitCron = require('./cron/noiseLimitCron');
+import express from 'express';
+import { MongoClient } from 'mongodb';
+import estimatedNoiseRouter from './routes/estimatedNoiseValues';
+import sensorPositionsRouter from './routes/sensorPositions';
+import * as dataSimulator from './cron/simulatorCron';
+import * as noiseLimitCron from './cron/noiseLimitCron';
+import cors from 'cors';
+import bodyParser from 'body-parser';
+
 
 const app = express();
 
 const APP_PORT = process.env.PORT;
 
-app.use(require('./routes/estimatedNoiseValues'));
-app.use(require('./routes/sensorPositions'));
+app.use(estimatedNoiseRouter);
+app.use(sensorPositionsRouter);
 
 app.use(bodyParser.json({ limit: '50MB' }));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 
-MongoClient.connect(process.env.MONGO_URL, { promiseLibrary: Promise }, (err, client) => {
+MongoClient.connect(process.env.MONGO_URL!, { promiseLibrary: Promise }, (err, client: MongoClient) => {
   if (err) {
     console.log(`Failed to connect to the database. ${err.stack}`);
   }

@@ -8,7 +8,6 @@ import * as noiseLimitCron from './cron/noiseLimitCron';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 
-
 const app = express();
 
 const APP_PORT = process.env.PORT;

@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const { MongoClient } = require('mongodb');
 const dataSimulator = require('./services/simulator');
+const noiseLimitCron = require('./cron/noiseLimitCron');
 
 const app = express();
 
@@ -31,4 +32,5 @@ MongoClient.connect(process.env.MONGO_URL, { promiseLibrary: Promise }, (err, cl
   });
 
   dataSimulator.startSimulator(client);
+  noiseLimitCron.start(client);
 });

@@ -1,5 +1,6 @@
 const { getSensorsMeasurements } = require('../db/metric/estimatedNoiseValueRepository');
 const { getSolution } = require('./wolfram');
+const { getSensorsMeasurementsWithinRange } = require('../db/metric/estimatedNoiseValueRepository');
 
 const solveTriangulationRelation = async (sensorValues) => {
   console.log(sensorValues);
@@ -32,4 +33,10 @@ const getEstimatedValuesForCoordinates = async (dbClient, coordinatesMatrix = nu
   };
 };
 
-module.exports = { getEstimatedValuesForCoordinates };
+const isThereAnyNoiseValueAboveTheLimit = async (dbClient, timeRange) => {
+  const lastValuesWithinTheInterval = await getSensorsMeasurementsWithinRange(dbClient, timeRange);
+  const limitValue = parseInt(process.env.NOISE_LIMIT, 10);
+  return lastValuesWithinTheInterval.some((item) => item.value > limitValue);
+};
+
+module.exports = { getEstimatedValuesForCoordinates, isThereAnyNoiseValueAboveTheLimit };

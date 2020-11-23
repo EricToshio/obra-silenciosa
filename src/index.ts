@@ -14,14 +14,6 @@ app.use(require('./routes/sensorPositions'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// app.get('/teste', (req, res) => {
-//   // EXEMPLO para obter variavel db
-//   const { db } = req.app.locals;
-//   res.send('Hello World!');
-// });
-
-// Create a MongoDB connection pool and start the application
-// after the database connection is ready
 MongoClient.connect(process.env.MONGO_URL, { promiseLibrary: Promise }, (err, client) => {
   if (err) {
     console.log(`Failed to connect to the database. ${err.stack}`);

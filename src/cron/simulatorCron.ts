@@ -1,28 +1,14 @@
 const { CronJob } = require('cron');
-const { findSensorPositions } = require('../db/metric/noiseRepository');
+import { findSensorPositions, SensorPosition } from '../db/metric/noiseRepository';
 const { calculateDecibel } = require('../utils/triangulation');
-
-// Just for refence
-// eslint-disable-next-line no-unused-vars
-const messageTemplate = {
-  // number: identifier of sensor
-  id: null,
-  // number: timestamp that the message arrived
-  timestamp: null,
-  // number: value obtained in dB
-  value: null,
-  // number: latitute of sensor position
-  lat: null,
-  // number: longitute of sensor position
-  long: null,
-};
+import { MongoClient } from 'mongodb';
 
 // Every 2 minutes "send" a message
 const messageCronFrequence = '*/2 * * * *';
 
-const generateRandomDecibel = () => 70 + 50 * Math.random();
+const generateRandomDecibel = (): number => 70 + 50 * Math.random();
 
-const generateSoundSource = (sensorPositions) => {
+const generateSoundSource = (sensorPositions: SensorPosition[]): { lat: number; lon: number; value: number } => {
   const lat = (sensorPositions.reduce((prev, actual) => prev + actual.lat, 0) / 3)
     + 0.001 * (Math.random() * 2 - 1);
   const lon = sensorPositions.reduce((prev, actual) => prev + actual.lon, 0) / 3
@@ -36,7 +22,7 @@ const generateSoundSource = (sensorPositions) => {
   };
 };
 
-const startSimulator = async (dbClient) => {
+const start = async (dbClient: MongoClient): Promise<void> => {
   const messageCollection = dbClient.db('metric').collection('message');
   const noiseSourceCollection = dbClient.db('metric').collection('noiseSource');
   console.log('Started sensor simulator');
@@ -60,4 +46,4 @@ const startSimulator = async (dbClient) => {
   }, null, true, 'America/Los_Angeles').start();
 };
 
-module.exports = { startSimulator };
+export { start };

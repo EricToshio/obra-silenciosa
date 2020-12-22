@@ -1,8 +1,8 @@
-const sgMail = require('@sendgrid/mail');
+import sgMail from '@sendgrid/mail';
 
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
 
-const sendAlertEmail = (email) => {
+const sendAlertEmail = (email: string): void => {
   sgMail
     .send({
       to: email,
@@ -17,4 +17,4 @@ const sendAlertEmail = (email) => {
     });
 };
 
-module.exports = { sendAlertEmail };
+export { sendAlertEmail };
